@@ -1,0 +1,51 @@
+{
+	"name": "DIM_TEMPO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_Logistica",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "TEMPO_SK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DATA_CALENDARIO",
+				"type": "date"
+			},
+			{
+				"name": "ANO",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "MES",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DIA",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TRIMESTRE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DIA_SEMANA",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DIM_TEMPO"
+		}
+	}
+}

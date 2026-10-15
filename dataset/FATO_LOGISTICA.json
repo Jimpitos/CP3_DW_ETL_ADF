@@ -1,0 +1,110 @@
+{
+	"name": "FATO_LOGISTICA",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_Logistica",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ENTREGA_SK",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "ENTREGA_ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MOTORISTA_SK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "VEICULO_SK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TEMPO_SK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OCORRENCIA_SK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DATA_SAIDA",
+				"type": "datetime2",
+				"scale": 3
+			},
+			{
+				"name": "DATA_PREVISTA",
+				"type": "datetime2",
+				"scale": 3
+			},
+			{
+				"name": "DATA_ENTREGA",
+				"type": "datetime2",
+				"scale": 3
+			},
+			{
+				"name": "STATUS",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DISTANCIA_KM",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "PESO_KG",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "VALOR_FRETE",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 2
+			},
+			{
+				"name": "CUSTO_COMBUSTIVEL",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 2
+			},
+			{
+				"name": "MARGEM_ESTIMADA",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 2
+			},
+			{
+				"name": "AVALIACAO_CLIENTE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ENTREGA_NO_PRAZO",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ATRASO_MINUTOS",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "FATO_ENTREGA"
+		}
+	}
+}

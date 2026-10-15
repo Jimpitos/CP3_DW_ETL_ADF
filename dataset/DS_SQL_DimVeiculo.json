@@ -1,0 +1,39 @@
+{
+	"name": "DS_SQL_DimVeiculo",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_Logistica",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "VEICULO_SK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "VEICULO_ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PLACA",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TIPO_VEICULO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CAPACIDADE_KG",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DIM_VEICULO"
+		}
+	}
+}

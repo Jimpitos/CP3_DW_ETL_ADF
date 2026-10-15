@@ -1,0 +1,30 @@
+{
+	"name": "DIM_OCORRENCIA",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_Logistica",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "OCORRENCIA_SK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CODIGO_OCORRENCIA",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DESCRICAO",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DIM_TIPO_OCORRENCIA"
+		}
+	}
+}
