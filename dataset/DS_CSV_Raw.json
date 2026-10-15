@@ -1,0 +1,104 @@
+{
+	"name": "DS_CSV_Raw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_Logistica",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "entregas_logistica_full.csv",
+				"folderPath": "landing/raw/logistica/full"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "entrega_id",
+				"type": "String"
+			},
+			{
+				"name": "data_saida",
+				"type": "String"
+			},
+			{
+				"name": "data_prevista",
+				"type": "String"
+			},
+			{
+				"name": "data_entrega",
+				"type": "String"
+			},
+			{
+				"name": "status",
+				"type": "String"
+			},
+			{
+				"name": "motorista_id",
+				"type": "String"
+			},
+			{
+				"name": "motorista_nome",
+				"type": "String"
+			},
+			{
+				"name": "motorista_cidade",
+				"type": "String"
+			},
+			{
+				"name": "motorista_uf",
+				"type": "String"
+			},
+			{
+				"name": "veiculo_id",
+				"type": "String"
+			},
+			{
+				"name": "placa",
+				"type": "String"
+			},
+			{
+				"name": "tipo_veiculo",
+				"type": "String"
+			},
+			{
+				"name": "capacidade_kg",
+				"type": "String"
+			},
+			{
+				"name": "tipo_ocorrencia_codigo",
+				"type": "String"
+			},
+			{
+				"name": "tipo_ocorrencia_descricao",
+				"type": "String"
+			},
+			{
+				"name": "distancia_km",
+				"type": "String"
+			},
+			{
+				"name": "peso_kg",
+				"type": "String"
+			},
+			{
+				"name": "valor_frete",
+				"type": "String"
+			},
+			{
+				"name": "custo_combustivel",
+				"type": "String"
+			},
+			{
+				"name": "avaliacao_cliente",
+				"type": "String"
+			}
+		]
+	}
+}

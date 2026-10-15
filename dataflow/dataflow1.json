@@ -1,0 +1,56 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV_Raw",
+						"type": "DatasetReference"
+					},
+					"name": "DFCargaDimensoes"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          entrega_id as string,",
+				"          data_saida as string,",
+				"          data_prevista as string,",
+				"          data_entrega as string,",
+				"          status as string,",
+				"          motorista_id as string,",
+				"          motorista_nome as string,",
+				"          motorista_cidade as string,",
+				"          motorista_uf as string,",
+				"          veiculo_id as string,",
+				"          placa as string,",
+				"          tipo_veiculo as string,",
+				"          capacidade_kg as string,",
+				"          tipo_ocorrencia_codigo as string,",
+				"          tipo_ocorrencia_descricao as string,",
+				"          distancia_km as string,",
+				"          peso_kg as string,",
+				"          valor_frete as string,",
+				"          custo_combustivel as string,",
+				"          avaliacao_cliente as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> DFCargaDimensoes",
+				"DFCargaDimensoes derive(status = upper(trim(status)),",
+				"          motorista_uf = upper(trim(motorista_uf)),",
+				"          placa = upper(trim(placa)),",
+				"          tipo_veiculo = upper(trim(tipo_veiculo)),",
+				"          tipo_ocorrencia_codigo = iif(isNull(tipo_ocorrencia_codigo) || trim(tipo_ocorrencia_codigo) == '', 'SEM_OCORRENCIA', upper(trim(tipo_ocorrencia_codigo))),",
+				"          tipo_ocorrencia_descricao = iif(isNull(tipo_ocorrencia_descricao) || trim(tipo_ocorrencia_descricao) == '', 'Sem ocorrência', trim(tipo_ocorrencia_descricao))) ~> derivedColumn1"
+			]
+		}
+	}
+}
