@@ -64,6 +64,9 @@
 				},
 				{
 					"name": "CalculoMetricas"
+				},
+				{
+					"name": "Limpeza"
 				}
 			],
 			"scriptLines": [
@@ -136,7 +139,7 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> Tempo",
-				"DFCargafato, Motorista lookup(DFCargafato@motorista_id == Motorista@MOTORISTA_ID,",
+				"Limpeza, Motorista lookup(Limpeza@motorista_id == Motorista@MOTORISTA_ID,",
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> PesquisaMotorista",
@@ -144,7 +147,7 @@
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> PesquisaOcorrencia",
-				"PesquisaOcorrencia, Veiculo lookup(DFCargafato@placa == Veiculo@PLACA,",
+				"PesquisaOcorrencia, Veiculo lookup(Limpeza@placa == Veiculo@PLACA,",
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> PesquisaVeiculo",
@@ -155,6 +158,9 @@
 				"PesquisaTempo derive(MARGEM_ESTIMADA = toFloat(valor_frete) - toFloat(custo_combustivel),",
 				"          ENTREGA_NO_PRAZO = iif(data_entrega <= data_prevista, 1, 0),",
 				"          ATRASO_MINUTOS = iif(data_entrega > data_prevista, toInteger((toTimestamp(data_entrega) - toTimestamp(data_prevista)) / 60000), 0)) ~> CalculoMetricas",
+				"DFCargafato derive(placa = toString(upper(trim(placa))),",
+				"          motorista_id = toString(upper(trim(motorista_id))),",
+				"          tipo_ocorrencia_codigo = iif(isNull(tipo_ocorrencia_codigo) || trim(tipo_ocorrencia_codigo) == '', 'SEM_OCORRENCIA', toString(upper(trim(tipo_ocorrencia_codigo))))) ~> Limpeza",
 				"CalculoMetricas sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
@@ -181,7 +187,6 @@
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
-				"     truncate:true,",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
