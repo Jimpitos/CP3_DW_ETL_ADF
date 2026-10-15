@@ -1,5 +1,5 @@
 {
-	"name": "DIM_TEMPO",
+	"name": "DS_SQL_DIM_TEMPO",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_SQL_Logistica",

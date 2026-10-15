@@ -1,5 +1,5 @@
 {
-	"name": "DIM_OCORRENCIA",
+	"name": "DS_SQL_DIM_OCORRENCIA",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_SQL_Logistica",

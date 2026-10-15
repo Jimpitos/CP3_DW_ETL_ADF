@@ -29,14 +29,14 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "DIM_OCORRENCIA",
+						"referenceName": "DS_SQL_DIM_OCORRENCIA",
 						"type": "DatasetReference"
 					},
 					"name": "DimOcorrencia"
 				},
 				{
 					"dataset": {
-						"referenceName": "DIM_TEMPO",
+						"referenceName": "DS_SQL_DIM_TEMPO",
 						"type": "DatasetReference"
 					},
 					"name": "DimTempo"
@@ -146,6 +146,7 @@
 				"     updateable:false,",
 				"     upsertable:false,",
 				"     format: 'table',",
+				"     preSQLs:['DELETE FROM dbo.DIM_MOTORISTA'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
@@ -188,8 +189,8 @@
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
-				"     truncate:true,",
 				"     format: 'table',",
+				"     preSQLs:['DELETE FROM dbo.DIM_TIPO_OCORRENCIA'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
@@ -213,6 +214,7 @@
 				"     updateable:false,",
 				"     upsertable:false,",
 				"     format: 'table',",
+				"     preSQLs:['DELETE FROM dbo.DIM_TEMPO'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
