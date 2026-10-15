@@ -12,10 +12,30 @@
 					"name": "DFCargaDimensoes"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_DimMotorista",
+						"type": "DatasetReference"
+					},
+					"name": "ColetorDimMotorista"
+				}
+			],
 			"transformations": [
 				{
-					"name": "derivedColumn1"
+					"name": "LimpezaTextos"
+				},
+				{
+					"name": "RemoveDuplicados"
+				},
+				{
+					"name": "converter"
+				},
+				{
+					"name": "RegrasDeNegocio"
+				},
+				{
+					"name": "UnicosMotorista"
 				}
 			],
 			"scriptLines": [
@@ -49,7 +69,50 @@
 				"          placa = upper(trim(placa)),",
 				"          tipo_veiculo = upper(trim(tipo_veiculo)),",
 				"          tipo_ocorrencia_codigo = iif(isNull(tipo_ocorrencia_codigo) || trim(tipo_ocorrencia_codigo) == '', 'SEM_OCORRENCIA', upper(trim(tipo_ocorrencia_codigo))),",
-				"          tipo_ocorrencia_descricao = iif(isNull(tipo_ocorrencia_descricao) || trim(tipo_ocorrencia_descricao) == '', 'Sem ocorrência', trim(tipo_ocorrencia_descricao))) ~> derivedColumn1"
+				"          tipo_ocorrencia_descricao = iif(isNull(tipo_ocorrencia_descricao) || trim(tipo_ocorrencia_descricao) == '', 'Sem ocorrência', trim(tipo_ocorrencia_descricao))) ~> LimpezaTextos",
+				"LimpezaTextos aggregate(groupBy(entrega_id),",
+				"     each(match(name != 'entrega_id'), $$ = first($$))) ~> RemoveDuplicados",
+				"RemoveDuplicados derive(data_saida = toTimestamp(data_saida, 'yyyy-MM-dd HH:mm:ss'),",
+				"          data_prevista = toTimestamp(data_prevista, 'yyyy-MM-dd HH:mm:ss'),",
+				"          data_entrega = toTimestamp(data_entrega, 'yyyy-MM-dd HH:mm:ss'),",
+				"          distancia_km = toDecimal(distancia_km, 10, 2),",
+				"          peso_kg = toDecimal(peso_kg, 10, 2),",
+				"          valor_frete = toDecimal(valor_frete, 12, 2),",
+				"          custo_combustivel = toDecimal(custo_combustivel, 12, 2),",
+				"          capacidade_kg = toInteger(capacidade_kg),",
+				"          avaliacao_cliente = toInteger(avaliacao_cliente)) ~> converter",
+				"converter derive(TEMPO_SK = toInteger(toString(data_saida, 'yyyyMMdd')),",
+				"          MARGEM_ESTIMADA = valor_frete - custo_combustivel,",
+				"          ENTREGA_NO_PRAZO = iif(status == 'ENTREGUE', iif(data_entrega <= data_prevista, toInteger(1), toInteger(0)), toInteger(null())),",
+				"          ATRASO_MINUTOS = iif(status == 'ENTREGUE', iif(data_entrega > data_prevista, toInteger((data_entrega - data_prevista) / 60000), toInteger(0)), toInteger(null()))) ~> RegrasDeNegocio",
+				"RegrasDeNegocio aggregate(groupBy(motorista_id),",
+				"     nome = first(motorista_nome),",
+				"          cidade = first(motorista_cidade),",
+				"          uf = first(motorista_uf)) ~> UnicosMotorista",
+				"UnicosMotorista sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          MOTORISTA_SK as integer,",
+				"          MOTORISTA_ID as string,",
+				"          NOME as string,",
+				"          CIDADE as string,",
+				"          UF as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          MOTORISTA_ID = motorista_id,",
+				"          NOME = nome,",
+				"          CIDADE = cidade,",
+				"          UF = uf",
+				"     )) ~> ColetorDimMotorista"
 			]
 		}
 	}

@@ -11,7 +11,8 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "entregas_logistica_full.csv",
-				"folderPath": "landing/raw/logistica/full"
+				"folderPath": "raw/logistica/full",
+				"fileSystem": "landing"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",

@@ -1,0 +1,38 @@
+{
+	"name": "DS_SQL_DimMotorista",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_Logistica",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "MOTORISTA_SK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "MOTORISTA_ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NOME",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CIDADE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "UF",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DIM_MOTORISTA"
+		}
+	}
+}
