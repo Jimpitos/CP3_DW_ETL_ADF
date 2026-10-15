@@ -47,7 +47,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dataflowdim",
+						"referenceName": "DIM",
 						"type": "DataFlowReference"
 					},
 					"compute": {

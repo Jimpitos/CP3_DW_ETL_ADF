@@ -1,5 +1,5 @@
 {
-	"name": "dataflowdim",
+	"name": "DIM",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
