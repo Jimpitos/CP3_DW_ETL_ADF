@@ -163,94 +163,94 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DIM_OCORRENCIA')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/PL_Carga_Fato')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_SQL_Logistica",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
+				"activities": [
 					{
-						"name": "OCORRENCIA_SK",
-						"type": "int",
-						"precision": 10
+						"name": "FATO",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "dataflowdim",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "FATO",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"DFCargafato": {},
+									"Ocorrencia": {},
+									"Veiculo": {},
+									"Motorista": {},
+									"Tempo": {},
+									"Fato": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					},
 					{
-						"name": "CODIGO_OCORRENCIA",
-						"type": "nvarchar"
-					},
-					{
-						"name": "DESCRICAO",
-						"type": "nvarchar"
+						"name": "dataflowdim",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflowdim",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"DFCargaDimensoes": {},
+									"DimMotorista": {},
+									"DimVeiculo": {},
+									"DimOcorrencia": {},
+									"DimTempo": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "DIM_TIPO_OCORRENCIA"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_SQL_Logistica')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DIM_TEMPO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_SQL_Logistica",
-					"type": "LinkedServiceReference"
+				"policy": {
+					"elapsedTimeMetric": {}
 				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "TEMPO_SK",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "DATA_CALENDARIO",
-						"type": "date"
-					},
-					{
-						"name": "ANO",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "MES",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "DIA",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "TRIMESTRE",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "DIA_SEMANA",
-						"type": "int",
-						"precision": 10
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "DIM_TEMPO"
-				}
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_SQL_Logistica')]"
+				"[concat(variables('factoryId'), '/dataflows/FATO')]",
+				"[concat(variables('factoryId'), '/dataflows/dataflowdim')]"
 			]
 		},
 		{
@@ -470,6 +470,97 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/LS_ADLS_Logistica')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SQL_DIM_OCORRENCIA')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_Logistica",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "OCORRENCIA_SK",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CODIGO_OCORRENCIA",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DESCRICAO",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DIM_TIPO_OCORRENCIA"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_SQL_Logistica')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SQL_DIM_TEMPO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_SQL_Logistica",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TEMPO_SK",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "DATA_CALENDARIO",
+						"type": "date"
+					},
+					{
+						"name": "ANO",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "MES",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "DIA",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TRIMESTRE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "DIA_SEMANA",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DIM_TEMPO"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_SQL_Logistica')]"
 			]
 		},
 		{
@@ -714,6 +805,232 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/FATO')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DS_CSV_Raw",
+								"type": "DatasetReference"
+							},
+							"name": "DFCargafato"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_SQL_DIM_OCORRENCIA",
+								"type": "DatasetReference"
+							},
+							"name": "Ocorrencia"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_SQL_DimVeiculo",
+								"type": "DatasetReference"
+							},
+							"name": "Veiculo"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_SQL_DimMotorista",
+								"type": "DatasetReference"
+							},
+							"name": "Motorista"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_SQL_DIM_TEMPO",
+								"type": "DatasetReference"
+							},
+							"name": "Tempo"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "FATO_LOGISTICA",
+								"type": "DatasetReference"
+							},
+							"name": "Fato"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PesquisaMotorista"
+						},
+						{
+							"name": "PesquisaOcorrencia"
+						},
+						{
+							"name": "PesquisaVeiculo"
+						},
+						{
+							"name": "PesquisaTempo"
+						},
+						{
+							"name": "CalculoMetricas"
+						},
+						{
+							"name": "Limpeza"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          entrega_id as string,",
+						"          data_saida as date,",
+						"          data_prevista as string,",
+						"          data_entrega as string,",
+						"          status as string,",
+						"          motorista_id as string,",
+						"          motorista_nome as string,",
+						"          motorista_cidade as string,",
+						"          motorista_uf as string,",
+						"          veiculo_id as string,",
+						"          placa as string,",
+						"          tipo_veiculo as string,",
+						"          capacidade_kg as string,",
+						"          tipo_ocorrencia_codigo as string,",
+						"          tipo_ocorrencia_descricao as string,",
+						"          distancia_km as double,",
+						"          peso_kg as double,",
+						"          valor_frete as double,",
+						"          custo_combustivel as double,",
+						"          avaliacao_cliente as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> DFCargafato",
+						"source(output(",
+						"          OCORRENCIA_SK as integer,",
+						"          CODIGO_OCORRENCIA as string,",
+						"          DESCRICAO as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Ocorrencia",
+						"source(output(",
+						"          VEICULO_SK as integer,",
+						"          VEICULO_ID as string,",
+						"          PLACA as string,",
+						"          TIPO_VEICULO as string,",
+						"          CAPACIDADE_KG as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Veiculo",
+						"source(output(",
+						"          MOTORISTA_SK as integer,",
+						"          MOTORISTA_ID as string,",
+						"          NOME as string,",
+						"          CIDADE as string,",
+						"          UF as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Motorista",
+						"source(output(",
+						"          TEMPO_SK as integer,",
+						"          DATA_CALENDARIO as date,",
+						"          ANO as integer,",
+						"          MES as integer,",
+						"          DIA as integer,",
+						"          TRIMESTRE as integer,",
+						"          DIA_SEMANA as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Tempo",
+						"Limpeza, Motorista lookup(Limpeza@motorista_id == Motorista@MOTORISTA_ID,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> PesquisaMotorista",
+						"PesquisaMotorista, Ocorrencia lookup(tipo_ocorrencia_codigo == CODIGO_OCORRENCIA,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> PesquisaOcorrencia",
+						"PesquisaOcorrencia, Veiculo lookup(Limpeza@placa == Veiculo@PLACA,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> PesquisaVeiculo",
+						"PesquisaVeiculo, Tempo lookup(data_saida == DATA_CALENDARIO,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> PesquisaTempo",
+						"PesquisaTempo derive(MARGEM_ESTIMADA = toFloat(valor_frete) - toFloat(custo_combustivel),",
+						"          ENTREGA_NO_PRAZO = iif(data_entrega <= data_prevista, 1, 0),",
+						"          ATRASO_MINUTOS = iif(data_entrega > data_prevista, toInteger((toTimestamp(data_entrega) - toTimestamp(data_prevista)) / 60000), 0)) ~> CalculoMetricas",
+						"DFCargafato derive(placa = toString(upper(trim(placa))),",
+						"          motorista_id = toString(upper(trim(motorista_id))),",
+						"          tipo_ocorrencia_codigo = iif(isNull(tipo_ocorrencia_codigo) || trim(tipo_ocorrencia_codigo) == '', 'SEM_OCORRENCIA', toString(upper(trim(tipo_ocorrencia_codigo))))) ~> Limpeza",
+						"CalculoMetricas sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          ENTREGA_SK as long,",
+						"          ENTREGA_ID as string,",
+						"          MOTORISTA_SK as integer,",
+						"          VEICULO_SK as integer,",
+						"          TEMPO_SK as integer,",
+						"          OCORRENCIA_SK as integer,",
+						"          DATA_SAIDA as timestamp,",
+						"          DATA_PREVISTA as timestamp,",
+						"          DATA_ENTREGA as timestamp,",
+						"          STATUS as string,",
+						"          DISTANCIA_KM as decimal(10,2),",
+						"          PESO_KG as decimal(10,2),",
+						"          VALOR_FRETE as decimal(12,2),",
+						"          CUSTO_COMBUSTIVEL as decimal(12,2),",
+						"          MARGEM_ESTIMADA as decimal(12,2),",
+						"          AVALIACAO_CLIENTE as integer,",
+						"          ENTREGA_NO_PRAZO as integer,",
+						"          ATRASO_MINUTOS as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          ENTREGA_ID = entrega_id,",
+						"          MOTORISTA_SK,",
+						"          VEICULO_SK,",
+						"          TEMPO_SK,",
+						"          OCORRENCIA_SK,",
+						"          DATA_SAIDA = data_saida,",
+						"          DATA_PREVISTA = data_prevista,",
+						"          DATA_ENTREGA = data_entrega,",
+						"          STATUS = status,",
+						"          DISTANCIA_KM = distancia_km,",
+						"          PESO_KG = peso_kg,",
+						"          VALOR_FRETE = valor_frete,",
+						"          CUSTO_COMBUSTIVEL = custo_combustivel,",
+						"          AVALIACAO_CLIENTE = avaliacao_cliente,",
+						"          MARGEM_ESTIMADA,",
+						"          ENTREGA_NO_PRAZO,",
+						"          ATRASO_MINUTOS",
+						"     )) ~> Fato"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_CSV_Raw')]",
+				"[concat(variables('factoryId'), '/datasets/DS_SQL_DIM_OCORRENCIA')]",
+				"[concat(variables('factoryId'), '/datasets/DS_SQL_DimVeiculo')]",
+				"[concat(variables('factoryId'), '/datasets/DS_SQL_DimMotorista')]",
+				"[concat(variables('factoryId'), '/datasets/DS_SQL_DIM_TEMPO')]",
+				"[concat(variables('factoryId'), '/datasets/FATO_LOGISTICA')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dataflowdim')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -746,14 +1063,14 @@
 						},
 						{
 							"dataset": {
-								"referenceName": "DIM_OCORRENCIA",
+								"referenceName": "DS_SQL_DIM_OCORRENCIA",
 								"type": "DatasetReference"
 							},
 							"name": "DimOcorrencia"
 						},
 						{
 							"dataset": {
-								"referenceName": "DIM_TEMPO",
+								"referenceName": "DS_SQL_DIM_TEMPO",
 								"type": "DatasetReference"
 							},
 							"name": "DimTempo"
@@ -836,9 +1153,10 @@
 						"     nome = first(motorista_nome),",
 						"          cidade = first(motorista_cidade),",
 						"          uf = first(motorista_uf)) ~> UnicosMotorista",
-						"RegrasDeNegocio aggregate(groupBy(placa),",
+						"RegrasDeNegocio aggregate(groupBy(placa,",
+						"          capacidade_kg),",
 						"     tipo = first(tipo_veiculo),",
-						"          capacidade = first(capacidade_kg)) ~> UnicosVeiculo",
+						"          veiculo_id = first(veiculo_id)) ~> UnicosVeiculo",
 						"RegrasDeNegocio aggregate(groupBy(tipo_ocorrencia_codigo),",
 						"     descricao = first(tipo_ocorrencia_descricao)) ~> UnicosOcorrencia",
 						"RegrasDeNegocio aggregate(groupBy(TEMPO_SK),",
@@ -863,6 +1181,7 @@
 						"     updateable:false,",
 						"     upsertable:false,",
 						"     format: 'table',",
+						"     preSQLs:['DELETE FROM dbo.DIM_MOTORISTA'],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     errorHandlingOption: 'stopOnFirstError',",
@@ -886,13 +1205,15 @@
 						"     updateable:false,",
 						"     upsertable:false,",
 						"     format: 'table',",
+						"     preSQLs:['DELETE FROM dbo.DIM_VEICULO'],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     errorHandlingOption: 'stopOnFirstError',",
 						"     mapColumn(",
-						"          VEICULO_ID = placa,",
+						"          VEICULO_ID = veiculo_id,",
+						"          PLACA = placa,",
 						"          TIPO_VEICULO = tipo,",
-						"          CAPACIDADE_KG = capacidade",
+						"          CAPACIDADE_KG = capacidade_kg",
 						"     )) ~> DimVeiculo",
 						"UnicosOcorrencia sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
@@ -905,8 +1226,8 @@
 						"     insertable:true,",
 						"     updateable:false,",
 						"     upsertable:false,",
-						"     truncate:true,",
 						"     format: 'table',",
+						"     preSQLs:['DELETE FROM dbo.DIM_TIPO_OCORRENCIA'],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     errorHandlingOption: 'stopOnFirstError',",
@@ -930,6 +1251,7 @@
 						"     updateable:false,",
 						"     upsertable:false,",
 						"     format: 'table',",
+						"     preSQLs:['DELETE FROM dbo.DIM_TEMPO'],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     errorHandlingOption: 'stopOnFirstError',",
@@ -949,8 +1271,8 @@
 				"[concat(variables('factoryId'), '/datasets/DS_CSV_Raw')]",
 				"[concat(variables('factoryId'), '/datasets/DS_SQL_DimMotorista')]",
 				"[concat(variables('factoryId'), '/datasets/DS_SQL_DimVeiculo')]",
-				"[concat(variables('factoryId'), '/datasets/DIM_OCORRENCIA')]",
-				"[concat(variables('factoryId'), '/datasets/DIM_TEMPO')]"
+				"[concat(variables('factoryId'), '/datasets/DS_SQL_DIM_OCORRENCIA')]",
+				"[concat(variables('factoryId'), '/datasets/DS_SQL_DIM_TEMPO')]"
 			]
 		}
 	]
